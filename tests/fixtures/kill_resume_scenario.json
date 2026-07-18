@@ -1,0 +1,14 @@
+{
+  "schema": "task_ledger.fixture.kill_resume.v1",
+  "policy": "LIGHT — prove kill→resume_waiting→outbox contract; scripted engine only",
+  "scenario": {
+    "id": "kill-mid-then-resume",
+    "instruction": "long demo work for resume contract",
+    "task_id": "demo-task-resume-001",
+    "expect_after_kill": "resume_waiting",
+    "expect_after_resume_ok": true,
+    "expect_outbox_result": true,
+    "expect_outbox_meta": true,
+    "expect_ledger_done": true
+  }
+}

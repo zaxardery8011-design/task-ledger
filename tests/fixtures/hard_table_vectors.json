@@ -1,0 +1,36 @@
+{
+  "schema": "task_ledger.fixture.hard_table.v1",
+  "policy": "LIGHT — prove facts-only hard table contract; not host-PS parity",
+  "cases": [
+    {
+      "id": "empty-root",
+      "seed": { "inbox": [], "processing": [], "outbox_meta": [] },
+      "expect_queues": { "inbox": 0, "processing": 0, "outbox": 0 },
+      "expect_enabled": true,
+      "forbid_percent_in_text": true
+    },
+    {
+      "id": "two-inbox",
+      "seed": {
+        "inbox": ["demo-task-001", "demo-task-002"],
+        "processing": [],
+        "outbox_meta": []
+      },
+      "expect_queues": { "inbox": 2, "processing": 0, "outbox": 0 },
+      "expect_task_ids": ["demo-task-001", "demo-task-002"],
+      "forbid_percent_in_text": true
+    },
+    {
+      "id": "flag-off",
+      "seed": {
+        "inbox": ["demo-task-001"],
+        "processing": [],
+        "outbox_meta": [],
+        "flags": ["HARD_TABLE_OFF"]
+      },
+      "expect_queues": null,
+      "expect_enabled": false,
+      "forbid_percent_in_text": true
+    }
+  ]
+}

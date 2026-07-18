@@ -1,0 +1,54 @@
+{
+  "schema": "task_ledger.fixture.deferred.v1",
+  "policy": "LIGHT — prove deferred no-evaporate contract; not host-PS parity",
+  "vectors": [
+    {
+      "id": "promise-en-check",
+      "assistant": "I'll check and report back",
+      "operator": "how far are we?",
+      "expect_is_deferred": true,
+      "expect_should_enqueue": true,
+      "expect_reason": "deferred_promise"
+    },
+    {
+      "id": "promise-zh-lookup",
+      "assistant": "我去查一下",
+      "operator": "進度呢",
+      "expect_is_deferred": true,
+      "expect_should_enqueue": true,
+      "expect_reason": "deferred_promise"
+    },
+    {
+      "id": "not-deferred-order-ack",
+      "assistant": "Queued, task_id=demo-task-001, will report when done.",
+      "operator": "Implement resume",
+      "expect_is_deferred": false,
+      "expect_should_enqueue": false,
+      "expect_reason": "no_gap"
+    },
+    {
+      "id": "not-deferred-hard-table",
+      "assistant": "Progress hard table built=12:00:00\nhard-path=ON\nNote: facts only — no fabricated percent.",
+      "operator": "status?",
+      "expect_is_deferred": false,
+      "expect_should_enqueue": false,
+      "expect_reason": "no_gap"
+    },
+    {
+      "id": "lookup-orphan-ack",
+      "assistant": "ok checking",
+      "operator": "how far are we?",
+      "expect_is_deferred": true,
+      "expect_should_enqueue": true,
+      "expect_reason_any": ["deferred_promise", "lookup_orphan_ack"]
+    },
+    {
+      "id": "substance-report",
+      "assistant": "Looked up queues: inbox=0 proc=0 outbox=1. Result in outbox/demo-task-001.result.md",
+      "operator": "how far?",
+      "expect_is_deferred": false,
+      "expect_should_enqueue": false,
+      "expect_reason": "no_gap"
+    }
+  ]
+}

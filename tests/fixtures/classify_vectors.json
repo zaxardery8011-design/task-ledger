@@ -1,0 +1,79 @@
+{
+  "schema": "task_ledger.fixture.classify.v1",
+  "policy": "LIGHT — prove public classify contract; not host-PS parity",
+  "vectors": [
+    {
+      "id": "exec-en-implement",
+      "text": "Implement hard table formatter and write evidence",
+      "expect_kind": "execution_order",
+      "should_enqueue": true
+    },
+    {
+      "id": "exec-zh-fix",
+      "text": "修好 resume 路徑並回報路徑",
+      "expect_kind": "execution_order",
+      "should_enqueue": true
+    },
+    {
+      "id": "status-en-progress",
+      "text": "progress?",
+      "expect_kind": "status_probe",
+      "should_enqueue": false
+    },
+    {
+      "id": "status-zh-progress",
+      "text": "進度呢",
+      "expect_kind": "status_probe",
+      "should_enqueue": false
+    },
+    {
+      "id": "status-en-status",
+      "text": "status",
+      "expect_kind": "status_probe",
+      "should_enqueue": false
+    },
+    {
+      "id": "vague-ok",
+      "text": "ok",
+      "expect_kind": "vague_ack",
+      "should_enqueue": false
+    },
+    {
+      "id": "confirm-en",
+      "text": "confirm",
+      "expect_kind": "confirm",
+      "should_enqueue": true
+    },
+    {
+      "id": "confirm-zh",
+      "text": "做吧",
+      "expect_kind": "confirm",
+      "should_enqueue": true
+    },
+    {
+      "id": "stop-en",
+      "text": "stop",
+      "expect_kind": "stop",
+      "should_enqueue": false
+    },
+    {
+      "id": "greeting-hi",
+      "text": "hello",
+      "expect_kind": "greeting",
+      "should_enqueue": false
+    },
+    {
+      "id": "progress-push",
+      "text": "next knife please",
+      "expect_kind": "execution_order",
+      "should_enqueue": true,
+      "is_progress_push": true
+    },
+    {
+      "id": "empty",
+      "text": "",
+      "expect_kind": "chat",
+      "should_enqueue": false
+    }
+  ]
+}
