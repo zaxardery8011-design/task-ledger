@@ -4,7 +4,7 @@
 |-------|-------|
 | Status | **docs-only** (slice-3 lock) |
 | In-tree adapter code | **No** — keep public surface minimal |
-| When to promote | Only if a concrete near-term need appears after ship-OK |
+| When to promote | Only if a concrete near-term package need appears |
 
 Selftests and demos use `FakeEngine` / `ScriptedEngine` under `task_ledger.ports` and
 `task_ledger.adapters.engine`. An external CLI agent is **not** required to install
@@ -20,7 +20,7 @@ from task_ledger.ports import EnginePort, WorkUnit
 class ExternalCliEngine:
     """Illustrative sketch — do not treat as shipped production code.
 
-    Wire your own process runner. Never hard-code private host paths or secrets.
+    Wire your own process runner. Never hard-code deployment paths or secrets.
     """
 
     def __init__(self, binary: str = "agent-cli") -> None:
@@ -47,10 +47,10 @@ _engine: EnginePort  # type: ignore[assignment]
 1. No network inside core; adapter owns I/O.  
 2. No secrets in package tree — env vars only on the host.  
 3. Map results into `{ok, status, result}` so resume ledger stays honest.  
-4. Do not import private host bridge / control-plane modules into the public package.
+4. Do not import production-only orchestration modules into the public package.
 
 ## Why docs-only first
 
 Slice-3 decision: keep the initial public surface minimal. Optional in-tree samples
 under `adapters/engine/` can wait until there is a concrete integration need and
-owner ship-OK for broader packaging.
+owner approval for broader packaging.

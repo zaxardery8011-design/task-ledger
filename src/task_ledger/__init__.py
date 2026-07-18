@@ -1,16 +1,16 @@
 """task-ledger — durable single-machine task core (receipts, resume, hard facts).
 
 Public package name: task-ledger
-Slice status: private staging (slice-3 accepted; ship prep hardening) — not published.
+Release status: published alpha.
 Public-line lexicon: operator / user / orchestrator / owner only.
-Ship gate: blocked until explicit owner ship-OK (see docs/SHIP_PREP.md).
+Ship gate: ready in this tree; rerun gates before release changes.
 """
 
 from __future__ import annotations
 
 __version__ = "0.1.0a3"
 __schema__ = "task_ledger.core.v1"
-__slice__ = "3-accepted-ship-prep-private"
+__slice__ = "4-published-alpha"
 
 from task_ledger.classify.order_class import classify_order
 from task_ledger.deferred.detect import should_enqueue_deferred

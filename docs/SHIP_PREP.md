@@ -1,67 +1,64 @@
-# Ship prep — owner decisions still open (private staging)
+# Ship readiness - published alpha
 
 | Field | Value |
 |-------|-------|
 | Schema | `task_ledger.ship_prep.v1` |
 | Package | **task-ledger** |
-| Staging | private only — **not published** |
-| Slice-4 | **blocked** until explicit owner ship-OK |
-| Related task | continue-build after slice-3 accept (`a-opensource-slice4-prep-go-001`) |
+| Release status | Published (alpha) |
+| Slice-4 | ship readiness checks clear |
+| Related task | public alpha release hardening |
 
-## Policy (hard)
+## Policy
 
-- Slice-3 offline selftest green ≠ permission to open a public remote.
-- Operator **"continue building"** authorizes **private staging work only**.
-- It is **not** ship-OK. Ship-OK must be an explicit, unambiguous instruction
-  (relayed via the dispatch channel), separate from keep-building language.
-- Automated gate: `scripts/ship_readiness_gate.py` — **expected RED** on this tree
-  until the owner decisions below land **and** `SHIP_OK.flag` exists.
+- Offline selftests green alone are not release evidence.
+- Ship readiness requires explicit ship-OK, real package metadata, final NOTICE attribution, license presence, and sanitize gate review.
+- Automated gate: `scripts/ship_readiness_gate.py` - expected **READY** for this tree.
+- Before future release changes, rerun pytest, sanitize gate, and ship readiness gate.
 
-## Owner decision table
+## Decision table
 
 | # | Decision | Current | Who fills | Where |
 |---|----------|---------|-----------|-------|
-| 1 | Explicit ship-OK | **missing** | owner | create `SHIP_OK.flag` (one line + date) only after verbatim ship-OK |
-| 2 | Public homepage URL | placeholder `https://github.com/example/task-ledger` | owner | `pyproject.toml` → `[project.urls] Homepage` |
-| 3 | Apache-2.0 copyright holder string | `COPYRIGHT_HOLDER_TBD` | owner | `NOTICE` + LICENSE appendix line if desired |
-| 4 | Human leak-read of every shipped file | open | A / owner designee | spot-check vs `SANITIZATION_CHECKLIST.md` |
+| 1 | Explicit ship-OK | recorded | owner | `SHIP_OK.flag` |
+| 2 | Public homepage URL | `https://github.com/zaxardery8011-design/task-ledger` | owner | `pyproject.toml` -> `[project.urls] Homepage` |
+| 3 | Apache-2.0 copyright holder string | `Task-Ledger Contributors` | owner | `NOTICE` + LICENSE appendix line |
+| 4 | Human leak-read of shipped files | repeat before release changes | A / owner designee | spot-check against sanitize policy |
 
 ## Commands
 
 ```bash
-# Private staging daily gates (must stay GREEN):
 python -m pytest tests -q
 python scripts/sanitize_gate.py --root .
 python scripts/run_offline_selftest.py
 
-# Ship gate (expected BLOCKED / FAIL until owner decisions):
 python scripts/ship_readiness_gate.py --root .
 python scripts/ship_readiness_gate.py --root . --json
 ```
 
-## What is already ready (no ship claim)
+## Current readiness evidence
 
 - Core contracts: classify / hard-table / deferred / kill-resume (LIGHT)
-- Sanitize hard gate GREEN on private tree
+- Sanitize hard gate GREEN on this tree
 - Atomic resume + work-order writes (crash mid-write hardening)
 - Claim path tolerates concurrent move races (skip + continue)
 - Package surface tests (required files, version consistency)
 - Engine honesty disclosure + neutral public-line lexicon lock
 
-## Explicit non-actions (this prep slice)
+## Explicit non-actions
 
-- No public remote, no `git push` to public, no PyPI upload
-- No inventing a real org homepage or copyright legal name
-- No creating `SHIP_OK.flag` without owner ship-OK
-- No changing live host bridge / heart / secrets
+- No PyPI upload from this repository step
+- No changing release identity without owner approval
+- No bundling credentials, live data, or production-only integrations
+- No changing production systems from package release work
 
 ## Ladder reminder
 
 ```text
-private staging → offline selftest (slice-3, accepted)
-               → ship prep (this doc; private continue-build)
-               → owner ship-OK + fill-ins → ship_readiness GREEN
-               → then slice-4 publish steps
+offline selftest (slice-3, accepted)
+  -> release hardening
+  -> owner ship-OK + metadata fill-ins
+  -> ship_readiness READY
+  -> published alpha
 ```
 
 `code_done` ≠ `live_green` ≠ `ship_ok`.

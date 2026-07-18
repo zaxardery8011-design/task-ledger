@@ -4,8 +4,8 @@
 
 Receipts on disk. Facts-only progress. Deferred promises that do not evaporate. Long work that survives kill.
 
-> **Status:** private staging (slice-3 **accepted**; ship-prep hardening). Not published.  
-> **Ship gate:** closed — owner ship-OK required (slice-4). "Continue building" ≠ ship-OK.  
+> **Status:** Published (alpha).  
+> **Ship gate:** ready in this tree; rerun selftests, sanitize, and ship readiness before release changes.  
 > **License:** Apache-2.0  
 > **Language:** Python 3.10+ (PowerShell optional adapter only)
 
@@ -44,7 +44,7 @@ No network. No API key. Scripted engine only.
 
 ---
 
-## Offline selftest (slice-3)
+## Offline selftest
 
 ```bash
 python -m pytest tests -q
@@ -143,47 +143,48 @@ Public docs use **neutral technical terms** only (`operator`, `user`, `orchestra
 
 ---
 
-## Ship readiness gate (expected RED on staging)
+## Ship readiness gate
 
 ```bash
 python scripts/ship_readiness_gate.py --root .
 ```
 
-Checks owner fill-ins before any public remote:
+Checks the release prerequisites recorded in this tree:
 
-1. `SHIP_OK.flag` present (only after **explicit** owner ship-OK)  
+1. `SHIP_OK.flag` present  
 2. Real Homepage URL in `pyproject.toml` (not `github.com/example/...`)  
 3. `NOTICE` copyright holder not TBD  
 4. `LICENSE` present  
 
-Private staging keeps this **BLOCKED** on purpose. Details: `docs/SHIP_PREP.md`.
+Current expected result: **READY**. Details: `docs/SHIP_PREP.md`.
 
 ---
 
 ## Positioning
 
 - **Sibling public line** (ecosystem): composes with queue/runtime and honesty-lint tools; does not re-ship them.  
-- **Not included:** full chat bridge, multi-node fleet control plane, private identity docs, live traffic dumps.
+- **Not included:** production-specific integrations, private deployment topology, identity material, or live operational data.
 
 ---
 
-## Slice ladder
+## Release State
 
-| Slice | Deliverable | This tree |
+| Stage | Deliverable | This tree |
 |-------|-------------|-----------|
 | 1 | Plan + inventory + sanitize checklist | done (host docs) |
 | 2 | Staging modules + adapters + README + gate | done |
 | 3 | Offline selftest suite (LIGHT) | **accepted** |
-| 3→4 prep | Atomic IO, claim race, ship_readiness gate, NOTICE | **here (private)** |
-| 4 | Public repo | only after ship-OK |
+| 3->4 prep | Atomic IO, claim race, ship_readiness gate, NOTICE | done |
+| 4 | Public repo | **published alpha** |
 
 ---
 
-## Remaining for slice-4 (blocked — not opened by continue-build)
+## Release hygiene
 
-1. Owner ship-OK for public remote (explicit; create `SHIP_OK.flag` only then).  
-2. Real homepage URL (placeholder still in `pyproject.toml`).  
-3. Apache-2.0 copyright holder string (`NOTICE` still `COPYRIGHT_HOLDER_TBD`).  
-4. A human leak-read of every shipped file.  
+Before changing release contents, rerun:
+
+1. `python -m pytest tests -q`  
+2. `python scripts/sanitize_gate.py --root .`  
+3. `python scripts/ship_readiness_gate.py --root .`  
 
 See `docs/SHIP_PREP.md` + `python scripts/ship_readiness_gate.py`.

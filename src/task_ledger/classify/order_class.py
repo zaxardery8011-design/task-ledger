@@ -1,7 +1,7 @@
 """Order classification — pure functions, no network, no machine paths.
 
-Extracted substance (knife-1): operator text → kind + should_enqueue.
-De-identified: no fleet node labels, no private product paths.
+Extracted substance: operator text -> kind + should_enqueue.
+De-identified: no deployment topology labels, no private product paths.
 """
 
 from __future__ import annotations

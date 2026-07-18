@@ -12,6 +12,7 @@ from typing import Any, Optional
 from uuid import uuid4
 
 from task_ledger.enqueue.work_order import default_root, ensure_queue_dirs, write_work_order
+from task_ledger.util.atomic import atomic_write_text
 
 
 def format_enqueue_notice(followup_id: str, reason: str = "deferred_promise") -> str:
@@ -54,7 +55,7 @@ def enqueue_followup(
         "updated_at": now,
     }
     rec_path = dirs["followups"] / f"{fid}.json"
-    rec_path.write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    atomic_write_text(rec_path, json.dumps(record, ensure_ascii=False, indent=2) + "\n")
 
     detail = (operator_text or "").strip()[:200]
     promise = {
@@ -73,9 +74,7 @@ def enqueue_followup(
         "updated_at": now,
     }
     promise_path = dirs["promises"] / f"promise-{fid}.json"
-    promise_path.write_text(
-        json.dumps(promise, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+    atomic_write_text(promise_path, json.dumps(promise, ensure_ascii=False, indent=2) + "\n")
 
     instruction = (
         f"# Follow-up work — REAL EXECUTION\n"

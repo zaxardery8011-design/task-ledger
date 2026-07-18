@@ -39,8 +39,8 @@ adapters/
 
 - `code_done` ≠ `live_green`
 - Self-reported percent is forbidden in hard table
-- Slice ladder: private staging → selftest → owner ship-OK before public remote
+- Release ladder: selftest -> owner ship-OK -> published alpha
 
 ## Out of scope
 
-Full chat bridges, multi-node fleet topology, private identity documents, live traffic dumps.
+Production-specific integrations, private deployment topology, identity material, and live operational data.

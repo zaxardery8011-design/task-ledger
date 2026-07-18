@@ -12,4 +12,4 @@ Missing this disclosure fails sanitization review.
 ## PowerShell
 
 PowerShell modules under `adapters/powershell/` are **optional host adapters**.
-The pip-installable default surface is pure Python. This package does **not** rewrite large private host PS orchestration into Python; those remain behind adapter boundaries or host-private. Slice-3 selftests do **not** require host-PS parity.
+The pip-installable default surface is pure Python. Production-specific orchestration remains behind adapter boundaries and is not bundled. Selftests do **not** require host orchestration parity.

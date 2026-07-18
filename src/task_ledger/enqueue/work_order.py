@@ -13,6 +13,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
+from uuid import uuid4
 
 from task_ledger.util.atomic import atomic_write_text
 
@@ -63,7 +64,7 @@ def new_receipt_id(prefix: str = "task") -> str:
     now = datetime.now(timezone.utc)
     stamp = now.strftime("%Y%m%d%H%M%S")
     ms = f"{now.microsecond // 1000:03d}"
-    raw = f"{prefix}-{stamp}{ms}"
+    raw = f"{prefix}-{stamp}{ms}-{uuid4().hex[:8]}"
     return re.sub(r"[^a-zA-Z0-9_-]", "-", raw)
 
 

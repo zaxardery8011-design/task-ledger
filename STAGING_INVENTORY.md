@@ -1,10 +1,10 @@
-# STAGING_INVENTORY — task-ledger (slice-3 accepted + ship-prep)
+# STAGING_INVENTORY - task-ledger (published alpha)
 
 | Field | Value |
 |-------|-------|
 | Schema | `task_ledger.staging.inventory.v1` |
-| Task | `a-opensource-slice4-prep-go-001` (extends accepted slice-3 tree) |
-| Staging root | `staging/task-ledger/` (private; **not** published) |
+| Task | public alpha release state |
+| Package root | repository root |
 | Public name | **task-ledger** |
 | Inventory date | 2026-07-18 |
 
@@ -14,7 +14,7 @@
 |------|------|
 | `README.md` | English quickstart + kill-then-resume + selftest + ship gate |
 | `LICENSE` | Apache-2.0 |
-| `NOTICE` | Apache attribution; copyright holder still TBD until owner |
+| `NOTICE` | Apache attribution |
 | `pyproject.toml` | pip package metadata + `task-ledger` entry point (v0.1.0a3) |
 | `.gitignore` | caches, venv, local ledger root |
 | `docs/ARCHITECTURE.md` | public architecture |
@@ -24,7 +24,7 @@
 | `docs/SHIP_PREP.md` | owner decision table; ship-OK policy |
 | `docs/EXTERNAL_CLI_ADAPTER.md` | docs-only external CLI sample (no in-tree code) |
 | `scripts/sanitize_gate.py` | CI regex hard gate |
-| `scripts/ship_readiness_gate.py` | ship blockers (expected RED on staging) |
+| `scripts/ship_readiness_gate.py` | ship readiness checks (expected READY for current tree) |
 | `scripts/run_sanitize_gate.ps1` | PS wrapper for gate |
 | `scripts/run_offline_selftest.py` | one-shot pytest + sanitize gate |
 | `src/task_ledger/**` | core package (+ `util/atomic` for crash-safe writes) |
@@ -37,11 +37,11 @@
 
 ## Explicitly not in tree
 
-- Full chat bridge, bot tokens, live chat ids  
-- Heart / control-plane daemon  
-- Multi-node fleet ops language, private identity LIVE docs  
-- Private machine roots / schtasks service names  
-- Live evidence dumps / history samples  
+- Production-specific messaging integrations, credentials, or live channel identifiers  
+- Private deployment control services  
+- Private deployment topology or identity material  
+- Private machine roots or internal service names  
+- Live operational evidence dumps or history samples  
 - In-tree external CLI adapter implementation (docs-only)  
 
 ## Gate snapshot (re-runnable)
@@ -54,5 +54,5 @@ python scripts/sanitize_gate.py --root .
 python scripts/run_offline_selftest.py
 # expected: PASS
 python scripts/ship_readiness_gate.py --root .
-# expected: status=BLOCKED (until owner ship-OK + fill-ins)
+# expected: status=READY
 ```

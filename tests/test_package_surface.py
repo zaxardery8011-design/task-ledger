@@ -40,19 +40,21 @@ def test_version_matches_pyproject() -> None:
     assert task_ledger.__version__ == m.group(1)
 
 
-def test_no_ship_ok_flag_in_package_root() -> None:
-    """Package must not pre-create SHIP_OK.flag (would false-green ship gate)."""
-    assert not (PACKAGE_ROOT / "SHIP_OK.flag").is_file()
+def test_ship_ok_flag_present_for_published_alpha() -> None:
+    """Published alpha package root records explicit ship readiness."""
+    assert (PACKAGE_ROOT / "SHIP_OK.flag").is_file()
 
 
-def test_notice_has_tbd_marker_until_owner() -> None:
+def test_notice_has_final_copyright_holder() -> None:
     notice = (PACKAGE_ROOT / "NOTICE").read_text(encoding="utf-8")
-    assert "COPYRIGHT_HOLDER_TBD" in notice
+    assert "COPYRIGHT_HOLDER_TBD" not in notice
+    assert "Task-Ledger Contributors" in notice
 
 
-def test_homepage_still_placeholder_until_owner() -> None:
+def test_homepage_is_public_repo_url() -> None:
     text = (PACKAGE_ROOT / "pyproject.toml").read_text(encoding="utf-8")
-    assert "github.com/example/task-ledger" in text
+    assert "github.com/example/task-ledger" not in text
+    assert 'Homepage = "https://github.com/zaxardery8011-design/task-ledger"' in text
 
 
 def test_public_exports() -> None:

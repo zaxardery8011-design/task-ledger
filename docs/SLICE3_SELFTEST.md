@@ -4,7 +4,7 @@
 |-------|-------|
 | Schema | `task_ledger.slice3.selftest.v1` |
 | Package | **task-ledger** |
-| Staging | private only — not published |
+| Repository state | Published alpha |
 | Depth | **LIGHT** (locked) |
 
 ## Goal
@@ -22,7 +22,7 @@ scripted/fake engine:
 ## How to run
 
 ```bash
-cd staging/task-ledger   # or this package root
+cd path/to/task-ledger
 python -m pytest tests -q
 python scripts/sanitize_gate.py --root .
 # or one shot:
@@ -33,12 +33,12 @@ python scripts/run_offline_selftest.py
 
 ## Explicit non-goals
 
-- Line-by-line parity with private host PowerShell classify/deferred regexes.  
-- Live chat, secrets, multi-node fleet language.  
+- Line-by-line parity with production host automation.  
+- Live channels, secrets, or private deployment topology language.  
 - In-tree external CLI adapter (see `EXTERNAL_CLI_ADAPTER.md` docs-only).  
-- Public remote / PyPI publish (slice-4 + owner ship-OK only).
+- PyPI publish workflow.
 
 ## Honesty
 
-`code_done` on this suite ≠ `live_green` on a production host. Slice-3 only claims
-offline contract green on the private staging tree.
+`code_done` on this suite != `live_green` on a production host. This suite only
+claims offline contract green on the package tree.

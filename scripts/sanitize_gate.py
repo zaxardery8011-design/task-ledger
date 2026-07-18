@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Sanitization CI regex hard gate — fail if private/leak patterns appear in shipped tree.
 
-Authoritative rules: SANITIZATION_CHECKLIST.md (host docs) + this script.
+Authoritative rules: host sanitization checklist + this script.
 Exit 0 = green; non-zero = red with hit list.
 Public-line lexicon: neutral technical terms only (operator/user/orchestrator).
 """
@@ -15,30 +15,25 @@ from pathlib import Path
 
 # Fail CI if any of these match file content (case-insensitive unless noted).
 FORBIDDEN_PATTERNS: list[tuple[str, str]] = [
-    (r"bot_token", "secret-ish token field"),
+    (r"bot[_-]?token", "secret-ish token field"),
     (r"api[_-]?key\s*[=:]\s*['\"]?[A-Za-z0-9_-]{8,}", "api key assignment"),
     (r"(?<![A-Za-z0-9_-])xai-[A-Za-z0-9_-]{8,}", "xai key-like token"),
     (r"(?<![A-Za-z0-9_-])sk-[A-Za-z0-9_-]{16,}", "sk- key-like token"),
     (r"8640\d{6}", "numeric chat-id-like fixture"),
-    (r"C:\\\\AIWFF-C", "private machine root AIWFF-C"),
-    (r"C:\\\\AIWFF(?!-)", "private machine root AIWFF"),
-    (r"C:\\AIWFF-C", "private machine root AIWFF-C"),
-    (r"C:\\AIWFF(?!-)", "private machine root AIWFF"),
-    (r"AIWFF-C-TG-Bridge", "private schtask / service name"),
-    (r"AIWFF-C-Tick", "private schtask name"),
-    (r"HEART_TG_ON", "private control-plane flag"),
+    (r"(?-i:\b[A-Z]:\\+[A-Z][A-Z0-9]{2,}(?:-[A-Z0-9]+)?(?:\\+|$))", "private machine root-like absolute path"),
+    (r"(?-i:\b[A-Z]{3,}(?:-[A-Z0-9]{1,4}){1,2}-[A-Z][A-Za-z0-9]*\b)", "internal service-name-like token"),
+    (r"(?-i:\b[A-Z]{4,}_[A-Z]{2,3}_(?:ON|OFF|CONTRACT|FLAG|TOKEN)\b)", "internal control-flag-like token"),
+    (r"(?-i:\b[A-Z]{2,3}_[A-Z]{4,}_(?:CONTRACT|FLAG|TOKEN)\b)", "internal contract-name-like token"),
     (r"primary\s*promotion", "private ops term"),
-    (r"\bSOUL\.md\b", "private identity file"),
-    (r"TG_DIALOGUE_CONTRACT", "private contract name"),
-    (r"captain_tg", "private source label"),
+    (r"(?-i:\b(?!(?:README|CHANGELOG|CONTRIBUTING|CODE_OF_CONDUCT|LICENSE|NOTICE|STAGING_INVENTORY|ARCHITECTURE|ENGINE_COUPLING|EXTRACTION_NOTES|SLICE3_SELFTEST|SHIP_PREP|EXTERNAL_CLI_ADAPTER)\.md\b)[A-Z][A-Z0-9_-]{2,}\.md\b)", "private all-caps identity-document-like filename"),
+    (r"\b[a-z]{5,}_(?:tg|dm)\b", "private chat-source label-like marker"),
     (r"chat_id\s*=\s*['\"]?\d{8,}", "live-looking chat id"),
 ]
 
 # Public-line lexicon (locked slice-3): neutral technical terms only
 # (operator / user / orchestrator / owner). Soft hits warn; --soft-fail hardens.
 SOFT_PATTERNS: list[tuple[str, str]] = [
-    (r"\bcaptain\b", "prefer operator/owner lexicon"),
-    (r"\bnode\s+[ABC]\b", "fleet topology language"),
+    (r"\bnode\s+[A-Z]\b", "fleet topology language"),
     (r"\bmini[- ]?brain\b", "prefer neutral public product language"),
     (r"\bprimary\s*promotion\b", "private ops term (also hard-forbidden variant)"),
 ]
@@ -98,11 +93,7 @@ def scan(root: Path, *, soft_fail: bool = False) -> tuple[list[str], list[str]]:
     soft_res = [(re.compile(p, re.I), label) for p, label in SOFT_PATTERNS]
 
     for path in iter_files(root):
-        # never scan this gate's own pattern table as a hit source incorrectly —
-        # patterns include the forbidden strings by design; allow scripts/sanitize_gate.py
         rel = path.relative_to(root).as_posix()
-        if rel in ("scripts/sanitize_gate.py", "scripts\\sanitize_gate.py"):
-            continue
         if "SANITIZATION" in path.name.upper() and path.suffix.lower() == ".md":
             # checklist docs may mention patterns by name
             continue

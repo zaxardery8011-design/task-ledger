@@ -1,7 +1,6 @@
-"""Ship readiness gate — must stay BLOCKED on private staging defaults.
+"""Ship readiness gate for published package defaults.
 
-Also proves the gate can go READY only when owner fill-ins are present
-(using a throwaway temp tree — never creates SHIP_OK.flag in package root).
+Also proves the gate still blocks incomplete throwaway trees.
 """
 
 from __future__ import annotations
@@ -24,17 +23,15 @@ def _load_gate_module():
     return mod
 
 
-def test_package_root_is_blocked() -> None:
-    """Private staging tree must not claim ship-ready."""
+def test_package_root_is_ready() -> None:
+    """Published alpha tree should satisfy ship readiness."""
     mod = _load_gate_module()
     summary = mod.check(PACKAGE_ROOT)
-    assert summary["status"] == "BLOCKED"
-    assert summary["blocker_count"] >= 1
-    joined = " ".join(summary["blockers"]).lower()
-    assert "ship_ok" in joined or "placeholder" in joined or "tbd" in joined
+    assert summary["status"] == "READY", summary
+    assert summary["blocker_count"] == 0
 
 
-def test_cli_exit_nonzero_on_package_root() -> None:
+def test_cli_exit_zero_on_package_root() -> None:
     r = subprocess.run(
         [sys.executable, str(GATE), "--root", str(PACKAGE_ROOT), "--json"],
         capture_output=True,
@@ -42,9 +39,9 @@ def test_cli_exit_nonzero_on_package_root() -> None:
         encoding="utf-8",
         errors="replace",
     )
-    assert r.returncode != 0
+    assert r.returncode == 0
     data = json.loads(r.stdout)
-    assert data["status"] == "BLOCKED"
+    assert data["status"] == "READY"
 
 
 def test_ready_when_all_fill_ins_present(tmp_path: Path) -> None:

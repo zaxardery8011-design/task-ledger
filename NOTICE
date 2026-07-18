@@ -3,18 +3,3 @@ Copyright 2026 Task-Ledger Contributors
 
 This product includes software developed for the task-ledger project.
 Licensed under the Apache License, Version 2.0.
-
---------------------------------------------------------------------
-OWNER FILL-IN (private staging ??NOT a publish authorization)
-
-Before any public remote / PyPI release (slice-4):
-1. Replace Task-Ledger Contributors with the real copyright holder string
-   chosen by the owner (person or org legal name as they want in history).
-2. Set a real Homepage URL in pyproject.toml (not github.com/example/...).
-3. Create SHIP_OK.flag only after explicit owner ship-OK
-   ("continue building" is not ship-OK).
-4. Re-run: python scripts/ship_readiness_gate.py --root .
-   and: python scripts/sanitize_gate.py --root .
-
-See docs/SHIP_PREP.md.
---------------------------------------------------------------------

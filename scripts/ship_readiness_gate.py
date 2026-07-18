@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Ship readiness gate — intentionally RED until owner decisions land.
+"""Ship readiness gate for public release prerequisites.
 
 This is NOT the sanitization gate. Sanitize can be GREEN while ship stays RED.
-Slice-4 public remote is blocked until every check below is satisfied AND the
-owner has given explicit ship-OK (not implied from "continue building").
+Release readiness requires every check below to be satisfied, including an
+explicit ship-OK flag.
 
 Exit 0 = ready to consider publish steps.
-Exit 1 = blocked (expected on private staging).
+Exit 1 = blocked because one or more prerequisites are missing.
 """
 
 from __future__ import annotations
@@ -48,8 +48,7 @@ def check(root: Path) -> dict:
     ship_flag = root / "SHIP_OK.flag"
     if not ship_flag.is_file():
         blockers.append(
-            "SHIP_OK.flag missing — requires explicit owner ship-OK "
-            "(not implied from continue-building)"
+            "SHIP_OK.flag missing — requires explicit owner ship-OK"
         )
     else:
         notes.append("SHIP_OK.flag present")
@@ -118,8 +117,7 @@ def check(root: Path) -> dict:
         "blockers": blockers,
         "notes": notes,
         "policy": (
-            "Operator 'continue building' is NOT ship-OK. "
-            "Public remote only after explicit owner ship-OK + blockers cleared."
+            "Release only with explicit owner ship-OK and all blockers cleared."
         ),
     }
 
@@ -151,9 +149,9 @@ def main(argv: list[str] | None = None) -> int:
             print(f"NOTE: {n}")
         print(f"POLICY: {summary['policy']}")
         if summary["status"] == "READY":
-            print("PASS — ship readiness checks clear (still need operator publish steps)")
+            print("PASS — ship readiness checks clear")
         else:
-            print("FAIL — expected on private staging until owner ship-OK + fill-ins")
+            print("FAIL — ship readiness blocked until prerequisites are fixed")
 
     return 0 if summary["status"] == "READY" else 1
 

@@ -9,7 +9,7 @@ description = "Durable single-machine task core that prevents AI agent progress 
 readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.10"
-authors = [{ name = "task-ledger contributors" }]
+authors = [{ name = "Task-Ledger Contributors" }]
 keywords = ["agent", "task", "receipt", "resume", "progress", "ledger"]
 classifiers = [
   "Development Status :: 3 - Alpha",

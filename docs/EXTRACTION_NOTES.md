@@ -3,10 +3,10 @@
 | Field | Value |
 |-------|-------|
 | Package public name | **task-ledger** |
-| Staging path | `staging/task-ledger/` (private only — not published) |
+| Repository state | Published alpha |
 | License | Apache-2.0 |
-| Current slice | **3 accepted** + **private ship-prep** (atomic IO, ship_readiness gate) |
-| Tasks | slice-2/3 done · continue-build `a-opensource-slice4-prep-go-001` (not ship) |
+| Current slice | **4 published alpha** |
+| Tasks | slice-2/3 extraction done; slice-4 release checks present |
 
 ## Naming
 
@@ -26,20 +26,20 @@ Public name **task-ledger** is free on PyPI/npm at decision time; GitHub exact-n
 | tick + resume | `tick/worker.py`, `tick/resume_ledger.py` |
 | ports | `ports.py`, `adapters/*` |
 
-Private host mapping (source of algorithms; **not** copied wholesale):
+Design-origin mapping (production system de-identified; **not** copied wholesale):
 
-| Private host (not shipped) | Public surface |
-|----------------------------|----------------|
-| Host dialogue classify + must-become-task | `classify/`, `enqueue/` |
-| Host progress hard table | `progress/hard_table.py` |
-| Host deferred follow-up link | `deferred/` |
-| Host tick / long-job resume | `tick/` (engine behind port) |
-| Full chat bridge, heart control plane | **out of package** |
+| Extracted behavior | Public surface |
+|--------------------|----------------|
+| Order classification + durable receipt flow | `classify/`, `enqueue/` |
+| Facts-only progress summary | `progress/hard_table.py` |
+| Deferred follow-up persistence | `deferred/` |
+| Long-job resume loop | `tick/` (engine behind port) |
+| Production-specific integrations and control services | **out of package** |
 
 ## Sanitization applied
 
 - No private machine roots (host-absolute paths rewritten to `$Root` / `TASK_LEDGER_ROOT`)
-- No bot tokens / live chat ids / schtask service names
+- No credentials, live channel ids, or internal service names
 - **Public-line lexicon (locked):** neutral technical terms only — `orchestrator`, `operator`, `user`, `owner`. Never private operator nicknames or fleet brain-facing labels in README, comments, or commit-facing prose.
 - Queue names: `inbox` / `processing` / `outbox`
 - Kill flags: `ORDER_OFF`, `HARD_TABLE_OFF`, `DEFERRED_OFF`
@@ -50,16 +50,16 @@ Private host mapping (source of algorithms; **not** copied wholesale):
 
 **Guideline:** Python is the front door; PowerShell is optional adapter.
 
-**Reality:** Production hosts may still run large PS orchestration for chat ingress, tick services, and worker launch. This package **did not** port those host scripts wholesale into Python.
+**Reality:** The production origin uses additional private orchestration outside this package. This package **did not** port deployment scripts wholesale into Python.
 
 **Resolution:**
 
 - Pure algorithms + durable ledger contracts → Python package (pip surface).
 - Thin PS samples under `adapters/powershell/` for hosts that call PS.
-- Full host bridge / control plane remain **out of package**.
+- Production-specific orchestration and integrations remain **out of package**.
 - **Slice-3:** public Python is SSOT; **no** dual-run host-PS parity matrix.
 
-## Slice-3 (done under private staging)
+## Extraction and selftest baseline
 
 - LIGHT fixtures: `classify_vectors.json`, `deferred_vectors.json`, `hard_table_vectors.json`, `kill_resume_scenario.json`
 - Contract tests: classify / hard-table / deferred / kill-resume
@@ -69,20 +69,20 @@ Private host mapping (source of algorithms; **not** copied wholesale):
 - External CLI adapter: **docs-only** `docs/EXTERNAL_CLI_ADAPTER.md`
 - Lexicon lock: neutral technical terms only on public-line
 
-## Private continue-build after slice-3 accept (not ship)
+## Release hardening after selftest accept
 
 - Atomic text writes for resume / work-order / outbox (`util/atomic.py`)
 - Claim path race tolerance (skip lost moves; do not crash tick)
-- `scripts/ship_readiness_gate.py` — expected **BLOCKED** until owner fill-ins
-- `NOTICE` + `docs/SHIP_PREP.md` — homepage + copyright TBD still explicit
+- `scripts/ship_readiness_gate.py` — expected **READY** for this tree
+- `NOTICE` + `docs/SHIP_PREP.md` — release attribution and readiness policy
 - Package surface tests + version **0.1.0a3**
 
-## Not done (slice-4 — blocked)
+## Post-alpha candidates
 
-- **Slice-4:** public repo + CI on remote — **owner ship-OK only** (do not skip ladder)
-- Homepage URL real org (placeholder remains until ship-OK)
-- Apache-2.0 copyright holder string for public NOTICE history
-- Creating `SHIP_OK.flag` without explicit owner ship-OK is **forbidden**
+- Remote CI packaging checks
+- PyPI publishing workflow
+- Additional adapter examples when a concrete integration need exists
+- Human leak-read before each public release change
 
 ---
 
@@ -94,5 +94,5 @@ Private host mapping (source of algorithms; **not** copied wholesale):
 | 2 | Soft lexicon | **NO** private nicknames on public-line; neutral technical terms only |
 | 3 | Fixture depth | **LIGHT** — public contracts only; not host-PS line parity |
 | 4 | External CLI sample | **docs-only first**; no in-tree sample adapter unless concrete need |
-| 5 | Homepage URL | still placeholder until ship-OK |
-| 6 | Apache copyright string | still TBD for public history |
+| 5 | Homepage URL | public repository URL |
+| 6 | Apache copyright string | `Task-Ledger Contributors` |
